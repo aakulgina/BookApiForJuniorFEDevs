@@ -28,6 +28,8 @@ npm install
 npm start
 ```
 
+Потыкать можно [тут](https://aakulgina.github.io/BookApiForJuniorFEDevs/).
+
 У меня также есть [телеграм-канал](https://t.me/fiveminfrontend) для учениц, где я делюсь полезными материалами о фронтэнде, там можно подискутировать или задать вопросы по коду из этого репозитория.
 
 Stay tuned!

@@ -1,90 +1,101 @@
 @import "/src/styles/varaibles.scss";
 
 .pagination {
-  display: inline-block;
-  color: $font-color;
-  width: 100%;
+	@apply m-2.5;
 
-  .pageNumbers {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
+	display: inline-block;
+	color: $font-color;
 
-    ul {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
-      grid-gap: 3px;
-      width: 100%;
-    }
+	.pageNumbers {
+		list-style: none;
+		padding: 0;
+		margin: 10px;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		gap: 5px;
 
-    li {
-      button {
-        text-align: center;
-        width: 45px;
-        line-height: 42px;
-        height: 45px;
-        border: 2px solid $secondary-color;
-        border-radius: 30px;
-        margin-right: 10px;
-        cursor: pointer;
-        display: inline-block;
-        color: $secondary-color;
+		ul {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+			grid-gap: 3px;
+			width: 100%;
+		}
 
-        &:hover {
-          background-color: $secondary-color;
-          color: $background-color;
-        }
-      }
-    }
-  }
+		li {
+			button {
+				text-align: center;
+				width: 45px;
+				line-height: 42px;
+				height: 45px;
+				border: 2px solid $secondary-color;
+				border-radius: 30px;
+				margin-right: 10px;
+				cursor: pointer;
+				display: inline-block;
+				color: $secondary-color;
 
-  :global {
-    .selected {
-      a {
-        background-color: $secondary-color;
-        color: #fff;
-      }
-    }
-  }
+				&:hover {
+					background-color: $secondary-color;
+					color: $background-color;
+				}
+			}
+
+			.current {
+				background-color: $secondary-color;
+				color: $background-color;
+
+				&:hover {
+					background-color: $tertiary-color;
+				}
+			}
+		}
+	}
+
+	:global {
+		.selected {
+			a {
+				background-color: $secondary-color;
+				color: #fff;
+			}
+		}
+	}
 }
 
 .select {
-  margin: 30px auto;
-  width: 150px;
-  position: relative;
-  display: block;
+	margin: 30px auto;
+	width: 150px;
+	position: relative;
+	display: block;
 
-  select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 100%;
-    padding: 10px;
-    border: 1px solid $secondary-color;
-    border-radius: 5px;
-    background-color: $background-color;
-    cursor: pointer;
-    outline: none;
+	select {
+		appearance: none;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		width: 100%;
+		padding: 10px;
+		border: 1px solid $secondary-color;
+		border-radius: 5px;
+		background-color: $background-color;
+		cursor: pointer;
+		outline: none;
 
-    &:focus {
-      border-color: $secondary-color;
-    }
-  }
+		&:focus {
+			border-color: $secondary-color;
+		}
+	}
 
-  &:hover select {
-    border-color: $secondary-color;
-  }
+	&:hover select {
+		border-color: $secondary-color;
+	}
 
-  &::after {
-    content: "\25BD";
-    position: absolute;
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-    pointer-events: none;
-  }
+	&::after {
+		content: "\25BD" / '';
+		position: absolute;
+		top: 50%;
+		right: 10px;
+		transform: translateY(-50%);
+		pointer-events: none;
+	}
 }

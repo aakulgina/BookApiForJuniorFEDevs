@@ -1,7 +1,7 @@
 {
-  "name": "book-app",
+  "name": "book-app-for-junio-fe-devs",
   "version": "0.1.0",
-  "homepage":"https://ninalesik.github.io/BookApi/",
+  "homepage": "",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
@@ -43,6 +43,6 @@
   },
   "devDependencies": {
     "gh-pages": "^6.1.1",
-    "tailwindcss": "^3.4.1"
+    "tailwindcss": "^3.4.3"
   }
 }

@@ -1,111 +1,129 @@
-import React, {useState, useEffect} from 'react';
+// import react from 'react';
+// https://legacy.reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html
+
+import { useState } from 'react';
 import Card from "../Card/Card";
 import Pagination from '../Pagination/Pagination';
 import axios from "axios";
 import style from "./style.module.scss";
 
+const Main = () => {
+	const [search, setSearch] = useState("");
+	const [bookData, setBookData] = useState([]);
+	const [totalBooks, setTotalBooks] = useState();
+	const [currentPage, setCurrentPage] = useState(1);
+	const [booksPerPage, setBooksPerPage] = useState(5);
+	const [isLoading, setIsLoading] = useState(false);
 
+	const handleBooksPerPageChange = (event) => {
+		const selectedValue = parseInt(event.target.value);
+		setBooksPerPage(selectedValue);
+		setCurrentPage(1);
 
-const Main =()=>{
-    const[search, setSearch]=useState("");
-    const [bookData,setBookData]=useState([]);
-    const [totalBooks,setTotalBooks]=useState();
-    const [currentPage, setCurrentPage]= useState();
-    const [booksPerPage, setBooksPerPage]=useState(7);
-     
+		if (!bookData || bookData.length) {
+			searchBook({ page: 1, size: selectedValue });
+		}
+	};
 
+	const saveSearchQuery = (evt) => {
+		const searchText = evt.target.value;
+		setSearch(searchText);
+	}
 
+	const searchBook = (params = {}) => {
+		setIsLoading(true);
+		const { page = currentPage, size = booksPerPage } = params;
+		const startIndex = (page - 1) * size;
 
- 
-const lastBookIndex=currentPage*booksPerPage;
-const firstBookIndex=lastBookIndex - booksPerPage;
-const currentBooks=bookData.slice(firstBookIndex, lastBookIndex);
-const startIndex = (currentPage - 1) * booksPerPage;
+		axios.get(`https://www.googleapis.com/books/v1/volumes?q=${search}&key=AIzaSyC67QiTZW4v9H874NsrUPxZGB-z1k-ZBkk&startIndex=${startIndex}&maxResults=${size}`)
+			.then(({ data: { items, totalItems } }) => {
+				setBookData(items);
+				setTotalBooks(totalItems);
+			})
+			.catch(err => {
+				throw new Error('Произошла ошибка: некорректное тело запроса.', { cause: err });
+			})
+			.finally(() => {
+				setIsLoading(false);
+			})
+	}
 
-    const handleBooksPerPageChange = (event) => {
-        const selectedValue = parseInt(event.target.value);
-        setBooksPerPage(selectedValue);
-        console.log(selectedValue);
-        setCurrentPage(1);
-            };
+	const handleSearchClick = () => {
+		setCurrentPage(1);
+		searchBook({ page: 1 });
+	}
 
-       const searchBook = (evt) => {
-        const searchText = evt.target.value; 
-        const startIndex = (currentPage - 1) * booksPerPage; 
-    
-        axios.get(`https://www.googleapis.com/books/v1/volumes?q=${searchText}&key=AIzaSyC67QiTZW4v9H874NsrUPxZGB-z1k-ZBkk&startIndex=${startIndex}&maxResults=${booksPerPage}`)
-            .then(res => {
-                setBookData(res.data.items);
-                setTotalBooks(res.data.totalItems);
-                setCurrentPage(1);
-                console.log(res)
-                
-                })
-            .catch(err => {
-                console.log(err);
-            });
-    }
+	const paginate = (pageNumber) => (evt) => {
+		evt.preventDefault();
+		setCurrentPage(pageNumber);
+		searchBook({ page: pageNumber });
+	}
 
-    const handleSearchClick = (evt) => {
-        const startIndex = (currentPage - 1) * booksPerPage; 
-            axios.get(`https://www.googleapis.com/books/v1/volumes?q=${search}&key=AIzaSyC67QiTZW4v9H874NsrUPxZGB-z1k-ZBkk&startIndex=${startIndex}&maxResults=${booksPerPage}`
-                )
-                .then(res => {
-                    setBookData(res.data.items);
-                    setTotalBooks(res.data.totalItems);
-                    setCurrentPage(1);
-                    console.log(res)
-                    
-                    })
-                .catch((err) => console.log(err));
-                setCurrentPage(1);
-        };
+	return (
+		<>
+			<div className={style.header}>
+				<div className={style.row1}>
+					<h1>Find your book here</h1>
+					<p>
+						<span>Books are the plane, and the train, and the road.
+							They are the destination, and the journey.</span>
+						<span>They are home.</span>
+					</p>
+				</div>
 
+				<div className={style.row2}>
+					<div className={style.search}>
+						<input
+							type="text"
+							role='search'
+							placeholder="Enter the book you are looking for"
+							value={search}
+							onChange={saveSearchQuery}
+						/>
+						<button type="button" aria-label='Search' onClick={handleSearchClick}>
+							<i className="fas fa-search" />
+						</button>
+					</div>
+				</div>
+			</div>
 
-            const paginate = (pageNumber, evt)=>{
-            evt.preventDefault();
-            setCurrentPage(pageNumber);
-            console.log("paginate");
-        }  
+			{isLoading
+				? (
+					<div className={style.loader} aria-label='Loading, please wait' />
+				)
+				: (
+					<>
+						{!bookData && (
+							<section aria-label='Search results' className={style.container + ' ' + style.error}>
+								<span>
+									Something went wrong:
+									either there are no books corresponding to your query
+									or the request ended up with some unexpected error.
+								</span>
+								<span>
+									Please change your search query and try again
+								</span>
+							</section>
+						)}
 
-            
-          
-    return(
-        <>
-        <div className={style.header}>
-            <div className={style.row1}>
-                <h1>Books are the plane, and the train, and the road. They are the destination, and the journey.  <br/> They are home.</h1>
-            </div>
-            <div className={style.row2}>
-                <h2>Find your book here</h2>
-                <div className={style.search}>
-                    <input type="text" placeholder="Enter the book you are looking for" value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={searchBook}/>
-                    <button type="button" onClick={handleSearchClick}><i className="fas fa-search"></i></button>
-                </div>
-                <img src="/images/books1.png" alt="Books" />
-                
-            </div>
-        </div>
+						{bookData?.length > 0 && (
+							<section aria-label='Search results' className={style.container}>
+								{bookData.map(book => <Card book={book} key={book.id} />)}
+							</section>
+						)}
+					</>
+				)
+			}
 
-        <div className={style.container}>
-            
-            {
-                <Card book={currentBooks}/>
-                }
-</div>
-<div className={style.paginationContainer}>
-{
-    <Pagination 
-    booksPerPage={booksPerPage}
-    totalBooks={totalBooks}
-    paginate={paginate}
-    handleBooksPerPageChange={handleBooksPerPageChange}
-    />
-}
-            </div>
-
-        </>
-    )
+			<Pagination
+				booksPerPage={booksPerPage}
+				totalBooks={totalBooks}
+				paginate={paginate}
+				handleBooksPerPageChange={handleBooksPerPageChange}
+				currentPage={currentPage}
+			/>
+		</>
+	)
 }
 
 export default Main;
